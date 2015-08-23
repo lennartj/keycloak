@@ -3,14 +3,30 @@
 
     <para>
         Keycloak provides theme support for web pages and emails. This allows customizing the look
-        and feel of end-user facing pages so they can be integrated with your applications.
+        and feel of end-user facing pages or electronic mail messages to provide seamless integration
+        with your applications.
     </para>
+
+    <section>
+        <title>Theme structure</title>
+        <imagedata fileref="images/theme-structure.png"/>
+        <para>A theme is defined by a <literal>name</literal> which contains a set of <literal>types</literal>.
+            The name is an string chosen by the theme author and which must comply with directory naming rules
+            ("angmar" in the image above is a 'legal' directory name), and the types are a well-defined set of strings
+            (an enum) known to KeyCloak ("actount", "admin" and "login in the image above).
+        </para>
+        <para>The theme root directory ("1" in the image above) may contain theme directories ("2" in the image
+            above), which in turn contains type directories ("3" in the image above). Adding themes to KeyCloak
+            amounts to adding directories with a certain internal structure below the theme root directory.
+        </para>
+    </section>
 
     <section>
         <title>Theme types</title>
         <para>
-            A theme can support several types to customize different aspects of Keycloak. The types currently available
-            are:
+            Themes can provide custom views for one or more use cases, called <literal>types</literal> in
+            Keycloak vocabulary. There are currently 5 different types, each of which can be overridden by a
+            theme:
             <itemizedlist>
                 <listitem>Account - Account management</listitem>
                 <listitem>Admin - Admin console</listitem>
@@ -24,14 +40,15 @@
     <section>
         <title>Configure theme</title>
         <para>
-            All theme types, except welcome, is configured through <literal>Keycloak Admin Console</literal>. To change
-            the theme used for a realm open the <literal>Keycloak Admin Console</literal>, select your realm
-            from the drop-down box in the top left corner. Under <literal>Settings</literal> click on <literal>Theme</literal>.
+            All theme types, except welcome, are configured in the <literal>Keycloak Admin Console</literal>.
+            To change the theme used for a realm open the <literal>Keycloak Admin Console</literal>, select your
+            realm from the drop-down box in the top left corner. Under <literal>Settings</literal> click
+            on <literal>Theme</literal>.
         </para>
         <para>
-            To set the theme for the <literal>master</literal> Keycloak admin console set the admin console theme for
-            the <literal>master</literal> realm. To set the theme for per realm admin access control set the admin console
-            theme for the corresponding realm.
+            To set the theme for the <literal>master</literal> Keycloak admin console set the admin console theme
+            for the <literal>master</literal> realm. To set the theme for per realm admin access control set the
+            admin console theme for the corresponding realm.
         </para>
         <para>
             To change the welcome theme you need to edit <literal>standalone/configuration/keycloak-server.json</literal>
@@ -77,7 +94,7 @@
             without restarting the server. To do this open <literal>../standalone/configuration/keycloak-server.json</literal>
             for <literal>theme</literal> set <literal>staticMaxAge</literal> to <literal>-1</literal> and
             <literal>cacheTemplates</literal> and <literal>cacheThemes</literal> to <literal>false</literal>. For example:
-<programlisting>[<![CDATA[
+<programlisting><![CDATA[
 "theme": {
     "default": "keycloak",
     "staticMaxAge": -1,
@@ -104,7 +121,7 @@
             want to override the base theme and import common resources from the Keycloak theme. To do this create the
             file <literal>.../standalone/configuration/themes/example-theme/login/theme.properties</literal> with the
             following contents:
-<programlisting>[<![CDATA[
+<programlisting><![CDATA[
 parent=base
 import=common/keycloak
 ]]></programlisting>
@@ -135,7 +152,7 @@ import=common/keycloak
             <programlisting>styles=css/styles.css css/more-styles.css</programlisting>
             For the example-theme above add <literal>example-theme/login/resources/css/styles.css</literal> with the
             following content:
-<programlisting>[<![CDATA[
+<programlisting><![CDATA[
 #kc-form {
     background-color: #000;
     color: #fff;
@@ -214,7 +231,7 @@ import=common/keycloak
                 <listitem>theme/example-theme/login/resources/css/styles.css</listitem>
             </itemizedlist>
             The contents of META-INF/keycloak-themes.json in this case would be:
-<programlisting>[<![CDATA[
+<programlisting><![CDATA[
 {
     "themes": [{
         "name" : "example-theme",
@@ -228,7 +245,7 @@ import=common/keycloak
             The deploy the jar as a module to Keycloak you can either manually create the module or use <literal>jboss-cli</literal>.
             It's simplest to use <literal>jboss-cli</literal> as it creates the required directories and module descriptor
             for you. To deploy the above jar <literal>jboss-cli</literal> run:
-<programlisting>[<![CDATA[
+<programlisting><![CDATA[
     KEYCLOAK_HOME/bin/jboss-cli.sh --command="module add --name=org.example.exampletheme --resources=example-theme.jar"
 ]]></programlisting>
             If you're on windows run <programlisting>KEYCLOAK_HOME/bin/jboss-cli.bat</programlisting>.
@@ -240,7 +257,7 @@ import=common/keycloak
         <para>
             Once you've created the module you need to register it with Keycloak do this by editing
             <literal>../standalone/configuration/keycloak-server.json</literal> and adding the module to <literal>theme/module/modules</literal>. For example:
-<programlisting>[<![CDATA[
+<programlisting><![CDATA[
 "theme": {
     ...
     "module": {
